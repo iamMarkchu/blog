@@ -27,7 +27,11 @@ class TagController extends Controller
     public function store(Request $request)
     {
         //
-
+        $validatedData = $request->validate([
+            "name" => "required|unique:tags|max:255",
+            "display_order" => "integer",
+        ]);
+        return response()->api();
     }
 
     /**
