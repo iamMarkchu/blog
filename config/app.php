@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\ResponseMacroServiceProvider;
+
 return [
 
     /*
@@ -159,7 +161,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        App\Providers\ResponseMacroServiceProvider::class,
     ],
 
     /*

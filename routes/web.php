@@ -11,6 +11,20 @@
 |
 */
 
+use Illuminate\Support\Facades\Auth;
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::group(["middleware" => ["auth"]], function () {
+    if (config('app.env') === 'local') {
+        Auth::LoginUseId(1);
+    }
+    Route::resource("tags", "TagController");
 });

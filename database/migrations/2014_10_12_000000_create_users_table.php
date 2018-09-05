@@ -20,6 +20,10 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->tinyInteger("status")->default(0)->unsigned()->comment("状态, 1=> 正常，2=> 删除");
+            $table->tinyInteger("level")->default(1)->unsigned()->comment("用户等级, 1=> 普通, 2=> 后台用户, 3=>管理员");
+            $table->string("avatar")->default("")->comment("用户头像");
+            $table->integer("github_id")->default(0)->unsigned()->comment("github id");
             $table->timestamps();
         });
     }
