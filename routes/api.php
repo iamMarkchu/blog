@@ -16,3 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::Group(['middleware' => ['auth:api']], function () {
+    Route::resource("tags", "TagController");
+});

@@ -21,10 +21,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
 Route::group(["middleware" => ["auth"]], function () {
-    if (config('app.env') === 'local') {
-        Auth::loginUsingId(1);
-    }
     Route::resource("tags", "TagController");
 });
