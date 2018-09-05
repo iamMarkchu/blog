@@ -10,7 +10,8 @@
         "laravel/framework": "5.7.*",
         "laravel/passport": "^6.0",
         "laravel/tinker": "^1.0",
-        "paragonie/random_compat": "2.*"
+        "paragonie/random_compat": "2.*",
+        "zgldh/qiniu-laravel-storage": "^0.9.2"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

@@ -82,4 +82,17 @@ class MaterialController extends Controller
     {
         //
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function upload(Request $request)
+    {
+        $path = $request->file("file")->store(
+            'image/'.$request->user()->id, 'qiniu'
+        );
+        $fullPath = config("filesystems.material_root_url"). $path;
+        echo $fullPath;die;
+    }
 }
