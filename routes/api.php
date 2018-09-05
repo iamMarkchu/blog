@@ -19,4 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::Group(['middleware' => ['auth:api']], function () {
     Route::resource("tags", "TagController");
+    Route::resource("categories", "CategoryController");
 });

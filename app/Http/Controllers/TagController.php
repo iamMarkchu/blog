@@ -55,6 +55,16 @@ class TagController extends Controller
     }
 
     /**
+     * how the form for editing the specified resource.
+     * @param Tag $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Tag $tag)
+    {
+        return response()->api($tag);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -96,9 +106,9 @@ class TagController extends Controller
         if ($tag->status != Tag::STATUS_DELETED) {
             $tag->status = Tag::STATUS_DELETED;
             $isDeleted = $tag->save();
-            return response()->api([], "删除成功!");
+            return response()->api($tag, "删除成功!");
         } else {
-            return response()->api([], "该标签已经删除了！请勿重复操作!");
+            return response()->api($tag, "该标签已经删除了！请勿重复操作!");
         }
     }
 }
