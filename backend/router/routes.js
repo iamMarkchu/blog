@@ -1,0 +1,42 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+
+Vue.use(Router)
+
+export const constantRouterMap = [
+    {
+        name: '个人中心',
+        path: '/',
+        component: require('../views/Index'),
+    },
+    {
+        name: '标签管理',
+        path: '/tag',
+        component: require('../components/CkBody'),
+        icon: 'el-icon-document',
+        children: [
+            {
+                name: '标签列表',
+                path: 'index',
+                component: require('../views/tag/Index'),
+            },
+            // {
+            //     name: '创建标签',
+            //     path: 'add',
+            //     component: require('../views/tag/Add'),
+            // },
+            // {
+            //     name: '修改标签',
+            //     path: 'edit/:id',
+            //     component: require('../views/tag/Edit'),
+            //     display: false,
+            // },
+        ],
+    }
+]
+
+export default new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({y: 0}),
+    routes: constantRouterMap
+})
