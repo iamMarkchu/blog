@@ -21,8 +21,17 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(["middleware" => ["auth"]], function () {
-    Route::get("/admin", function () {
+Route::group(["middleware" => ["auth"], "prefix" => "admin"], function () {
+    Route::get("/", function () {
         return view("admin");
     });
+    Route::resource("tags", "TagController");
+    Route::put("tags/{tag}/revoke", "TagController@revoke");
+    Route::resource("categories", "CategoryController");
+    Route::resource("materials", "MaterialController");
+    Route::post("materials/upload", "MaterialController@upload");
+
+    Route::resource("articles", "ArticleController");
+    Route::put("articles/{article}/publish", "ArticleController@publish");
+    Route::put("articles/{article}/revoke", "ArticleController@revoke");
 });

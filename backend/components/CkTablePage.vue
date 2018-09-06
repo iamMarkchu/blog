@@ -54,9 +54,10 @@
                 let query = Object.assign({page: this.currentPage, pageSize: this.pageSize}, this.query)
                 this.fetchList(query)
                     .then((response) => {
-                        this.tableData = response.data.result.data
-                        this.currentPage = response.data.result.current_page
-                        this.total = response.data.result.total
+                        console.log(response)
+                        this.tableData = response.data.data.data
+                        this.currentPage = response.data.data.current_page
+                        this.total = response.data.data.total
                         this.loading = false
                     })
             },

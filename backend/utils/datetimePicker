@@ -1,0 +1,63 @@
+export const pickerOptions = {
+    shortcuts: [
+        {
+            text: '今天',
+            onClick(picker) {
+                const date = new Date()
+                let dateObj = new Date(date.toLocaleDateString() + " 00:00:00");
+                picker.$emit('pick', dateObj);
+            }
+        },
+        {
+            text: '明天',
+            onClick(picker) {
+                const date = new Date();
+                date.setTime(date.getTime() + 3600 * 1000 * 24);
+                let dateObj = new Date(date.toLocaleDateString() + " 00:00:00");
+                picker.$emit('pick', dateObj);
+            }
+        },
+        {
+            text: '七天后',
+            onClick(picker) {
+                const date = new Date();
+                date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
+                let dateObj = new Date(date.toLocaleDateString() + " 00:00:00");
+                picker.$emit('pick', dateObj);
+            }
+        }
+    ]
+}
+
+export const pickerOptions2 = {
+    shortcuts: [
+        {
+            text: '今天',
+            onClick(picker) {
+                const date = new Date();
+                let dateObj = new Date(date.toLocaleDateString() + " 23:59:59");
+                picker.$emit('pick', dateObj);
+            }
+        },
+        {
+            text: '明天',
+            onClick(picker) {
+                const date = new Date();
+                date.setTime(date.getTime() + 3600 * 1000 * 24);
+                let dateObj = new Date(date.toLocaleDateString() + " 23:59:59");
+                picker.$emit('pick', dateObj);
+            }
+        },
+        {
+            text: '七天后',
+            onClick(picker) {
+                const date = new Date();
+                date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
+                let dateObj = new Date(date.toLocaleDateString() + " 23:59:59");
+                picker.$emit('pick', dateObj);
+            }
+        }
+    ]
+}
+
+export const valueFormat = 'yyyy-MM-dd HH:mm:ss'

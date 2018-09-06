@@ -20,17 +20,17 @@ export const constantRouterMap = [
                 path: 'index',
                 component: require('../views/tag/Index'),
             },
-            // {
-            //     name: '创建标签',
-            //     path: 'add',
-            //     component: require('../views/tag/Add'),
-            // },
-            // {
-            //     name: '修改标签',
-            //     path: 'edit/:id',
-            //     component: require('../views/tag/Edit'),
-            //     display: false,
-            // },
+            {
+                name: '创建标签',
+                path: 'add',
+                component: require('../views/tag/Add'),
+            },
+            {
+                name: '修改标签',
+                path: 'edit/:id',
+                component: require('../views/tag/Edit'),
+                display: false,
+            },
         ],
     }
 ]

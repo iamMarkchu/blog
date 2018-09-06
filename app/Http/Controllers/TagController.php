@@ -111,4 +111,19 @@ class TagController extends Controller
             return response()->api($tag, "该标签已经删除了！请勿重复操作!");
         }
     }
+
+    public function revoke(Tag $tag)
+    {
+        if ($tag->user_id != Auth::id()) {
+            return response()->api([], "你无权撤销此文章!", 500);
+        }
+
+        if ($tag->status == Tag::STATUS_DELETED) {
+            $tag->status = Tag::STATUS_NORMAL;
+            $isPublished = $tag->save();
+            return response()->api($tag, "撤销成功!");
+        } else {
+            return response()->api($tag, "该文章标签撤销了，请勿重复操作");
+        }
+    }
 }

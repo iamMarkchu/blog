@@ -8,8 +8,7 @@
 
 use App\Utils\Baidu\Translate;
 
-if(!function_exists('generate_url'))
-{
+if (!function_exists('generate_url')) {
     /**
      * @param $title
      * @return string
@@ -20,7 +19,7 @@ if(!function_exists('generate_url'))
         $from = 'zh';
         $to = 'en';
         $result = $tl->handle($title, $from, $to);
-        $words = $result['trans_result'][0]['dst']??"";
+        $words = $result['trans_result'][0]['dst'] ?? "";
         return str_slug($words);
     }
 }
