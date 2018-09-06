@@ -17,7 +17,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input("per_page", 15);
-        $categories = Category::with("parentCategory")->orderBy("created_at", "desc")->paginate($perPage);
+        $categories = Category::with(["parentCategory", "user"])->orderBy("created_at", "desc")->paginate($perPage);
         return response()->api($categories);
     }
 

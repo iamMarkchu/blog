@@ -19,7 +19,7 @@ class TagController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input("per_page", 15);
-        $tags = Tag::orderBy("created_at", "desc")->paginate($perPage);
+        $tags = Tag::with(["user"])->orderBy("created_at", "desc")->paginate($perPage);
         return response()->api($tags);
     }
 
