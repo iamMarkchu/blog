@@ -12,11 +12,14 @@ class MaterialController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = $request->input("per_page", 15);
+        $materials = Material::orderBy("created_at", "desc")->paginate($perPage);
+        return response()->api($materials);
     }
 
     /**
