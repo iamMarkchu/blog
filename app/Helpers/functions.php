@@ -23,3 +23,28 @@ if (!function_exists('generate_url')) {
         return str_slug($words);
     }
 }
+
+if (!function_exists('cascader_item')) {
+    function cascader_item($data, $pid=0)
+    {
+        $subItems = [];
+        foreach ($data as $k => $d)
+        {
+            if ($d['parent_id'] == $pid)
+            {
+                unset($data[$k]);
+                $d['children'] = cascader_item($data, $d['id']);
+                $tmpData = [
+                    "value" => $d['id'],
+                    "label" => $d['name']
+                ];
+                if (!empty($d['children']))
+                {
+                    $tmpData["children"] = $d['children'];
+                }
+                $subItems[] = $tmpData;
+            }
+        }
+        return $subItems;
+    }
+}

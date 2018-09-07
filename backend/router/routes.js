@@ -32,7 +32,30 @@ export const constantRouterMap = [
                 display: false,
             },
         ],
-    }
+    },
+    {
+        name: '类别管理',
+        path: '/category',
+        component: require('../components/CkBody'),
+        children: [
+            {
+                name: '类别列表',
+                path: 'index',
+                component: require('../views/category/Index'),
+            },
+            {
+                name: '创建类别',
+                path: 'add',
+                component: require('../views/category/Add'),
+            },
+            {
+                name: '修改类别',
+                path: 'edit/:id',
+                component: require('../views/category/Edit'),
+                display: false,
+            },
+        ],
+    },
 ]
 
 export default new Router({

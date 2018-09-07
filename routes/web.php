@@ -27,7 +27,10 @@ Route::group(["middleware" => ["auth"], "prefix" => "admin"], function () {
     });
     Route::resource("tags", "TagController");
     Route::put("tags/{tag}/revoke", "TagController@revoke");
+    Route::get("categories/all", "CategoryController@all");
+    Route::get("categories/tree", "CategoryController@tree");
     Route::resource("categories", "CategoryController");
+    Route::put("categories/{category}/revoke", "CategoryController@revoke");
     Route::resource("materials", "MaterialController");
     Route::post("materials/upload", "MaterialController@upload");
 

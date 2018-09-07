@@ -96,6 +96,10 @@ class CategoryController extends Controller
         if ($request->has("display_order")) {
             $category->display_order = $request->display_order;
         }
+        if ($request->has("parent_id"))
+        {
+            $category->parent_id = $request->parent_id;
+        }
         $isSaved = $category->save();
         if ($isSaved) {
             return response()->api($category, "修改成功!");
@@ -119,5 +123,32 @@ class CategoryController extends Controller
         } else {
             return response()->api($category, "该类别已经删除了！请勿重复操作!");
         }
+    }
+
+    public function revoke(Category $category)
+    {
+        if ($category->user_id != Auth::id()) {
+            return response()->api([], "你无权撤销此类别!", 500);
+        }
+
+        if ($category->status == Category::STATUS_DELETED) {
+            $category->status = Category::STATUS_NORMAL;
+            $isPublished = $category->save();
+            return response()->api($category, "撤销成功!");
+        } else {
+            return response()->api($category, "该文章类别撤销了，请勿重复操作");
+        }
+    }
+
+    public function all()
+    {
+        return response()->api(Category::with(["parentCategory", "user"])->orderBy("created_at", "desc")->get());
+    }
+
+    public function tree()
+    {
+        $categories = Category::with(["parentCategory", "user"])->orderBy("created_at", "desc")->get();
+        $data = cascader_item($categories->toArray());
+        return response()->api($data);
     }
 }

@@ -26,16 +26,37 @@ export function fetchList(query) {
     })
 }
 
+export function fetchAll() {
+    return request({
+        url: URL+'/all',
+        method: 'GET'
+    })
+}
+
 export function fetch(id) {
     return request({
-        url: URL + '/'+ id,
+        url: URL + '/'+ id + '/edit',
         method: 'get'
     })
 }
 
 export function tree() {
     return request({
-        url: '/categories-tree',
+        url: URL+ '/tree',
         method: 'get'
+    })
+}
+
+export function del(id) {
+    return request({
+        url: URL + '/'+ id,
+        method: 'DELETE'
+    })
+}
+
+export function revoke(id) {
+    return request({
+        url: URL + '/'+ id + '/revoke',
+        method: 'PUT'
     })
 }
