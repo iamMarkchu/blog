@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Material;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class MaterialController extends Controller
 {
@@ -18,7 +19,8 @@ class MaterialController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input("per_page", 15);
-        $materials = Material::with(["user"])->orderBy("created_at", "desc")->paginate($perPage);
+        $map = ["status" => $request->input("status", Material::STATUS_NORMAL)];
+        $materials = Material::with(["user"])->where($map)->orderBy("created_at", "desc")->paginate($perPage);
         return response()->api($materials);
     }
 
@@ -112,6 +114,8 @@ class MaterialController extends Controller
         } else {
             $material->status = Material::STATUS_DELETED;
             $isDeleted = $material->save();
+            list($emp, $path) = explode(config("filesystems.material_root_url"), $material->url);
+            Storage::disk('qiniu')->delete($path);
             return response()->api($material, "删除成功!");
         }
     }
@@ -134,6 +138,17 @@ class MaterialController extends Controller
         } else {
             $fullPath = config("filesystems.material_root_url") . $path;
 
+            $material = new Material;
+            $material->title = $request->file("file")->getClientOriginalName();
+            $material->type = Material::TYPE_IMAGE;
+            $material->status = Material::STATUS_NORMAL;
+            $material->url = $fullPath;
+            $material->user_id = Auth::id();
+
+            $isSaved = $material->save();
+            if (!$isSaved) {
+                return response()->api($material, "素材保存失败!", 500);
+            }
             return response()->api(["full_path" => $fullPath], "文件保存成功!");
         }
     }

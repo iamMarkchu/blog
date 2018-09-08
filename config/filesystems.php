@@ -55,15 +55,6 @@ return [
             'visibility' => 'public',
         ],
 
-        's3' => [
-            'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-        ],
-
         'qiniu' => [
             'driver'  => 'qiniu',
             'domains' => [
@@ -76,6 +67,15 @@ return [
             'bucket'    => env('QINIU_BUCKET_NAME'),  //Bucket名字
             'notify_url'=> '',  //持久化处理回调地址
             'access'    => 'public'  //空间访问控制 public 或 private
+        ],
+
+        's3' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('AWS_BUCKET'),
+            'url' => env('AWS_URL'),
         ],
 
     ],

@@ -56,6 +56,23 @@ export const constantRouterMap = [
             },
         ],
     },
+    {
+        name: '素材管理',
+        path: '/material',
+        component: require('../components/CkBody'),
+        children: [
+            {
+                name: '新增素材',
+                path: 'add',
+                component: require('../views/material/Add')
+            },
+            {
+                name: '素材列表',
+                path: 'index',
+                component: require('../views/material/Index')
+            }
+        ]
+    }
 ]
 
 export default new Router({
