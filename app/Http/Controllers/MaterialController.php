@@ -149,7 +149,7 @@ class MaterialController extends Controller
             if (!$isSaved) {
                 return response()->api($material, "素材保存失败!", 500);
             }
-            return response()->api(["full_path" => $fullPath], "文件保存成功!");
+            return response()->api($material, "文件保存成功!");
         }
     }
 }

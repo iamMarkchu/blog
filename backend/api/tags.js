@@ -46,3 +46,10 @@ export function revoke(id) {
         method: 'PUT'
     })
 }
+
+export function all() {
+    return request({
+        url: URL + '/all',
+        method: 'GET'
+    })
+}

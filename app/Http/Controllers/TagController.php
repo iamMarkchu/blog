@@ -126,4 +126,9 @@ class TagController extends Controller
             return response()->api($tag, "该文章标签撤销了，请勿重复操作");
         }
     }
+
+    public function all()
+    {
+        return response()->api(Tag::with("user")->where("status", "=", "1")->orderBy("created_at", "desc")->get());
+    }
 }

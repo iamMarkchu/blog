@@ -25,6 +25,7 @@ Route::group(["middleware" => ["auth"], "prefix" => "admin"], function () {
     Route::get("/", function () {
         return view("admin");
     });
+    Route::get("tags/all", "TagController@all");
     Route::resource("tags", "TagController");
     Route::put("tags/{tag}/revoke", "TagController@revoke");
     Route::get("categories/all", "CategoryController@all");

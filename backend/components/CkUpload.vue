@@ -4,7 +4,7 @@
                 :name="name"
                 :action="action"
                 :headers="headers"
-                list-type="picture-card"
+                :show-file-list="false"
                 :file-list="fileList"
                 :on-preview="onPreview"
                 :on-success="onSuccess"
@@ -12,7 +12,7 @@
                 :disabled="disabled"
                 :on-exceed="onExceed"
                 :limit="1">
-            <i class="el-icon-plus"></i>
+            <el-button size="small" type="primary">点击上传</el-button>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="">
@@ -51,6 +51,7 @@
                 this.dialogVisible = true
             },
             onSuccess(response, file, fileList) {
+                this.$message("上传成功")
                 this.$emit('action', response)
             },
             onExceed(files, fileList) {
@@ -60,13 +61,7 @@
                 this.$emit('action', '')
             },
             initImage() {
-                if (this.image.length > 2)
-                {
-                    this.fileList = [{
-                        name: 'image.jpg',
-                        url: ASSETS_URL + this.image
-                    }]
-                }
+
             }
         }
     }

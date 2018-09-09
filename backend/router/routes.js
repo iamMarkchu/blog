@@ -72,6 +72,18 @@ export const constantRouterMap = [
                 component: require('../views/material/Index')
             }
         ]
+    },
+    {
+        name: '文章管理',
+        path: '/article',
+        component: require('../components/CkBody'),
+        children: [
+            {
+                name: '创建文章',
+                path: 'add',
+                component: require('../views/article/Add')
+            }
+        ]
     }
 ]
 

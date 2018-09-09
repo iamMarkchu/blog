@@ -32,6 +32,7 @@ class CategoryController extends Controller
         // 验证数据
         $request->validate([
             "name" => "required|unique:categories|max:255",
+            "recursive" => "array",
             "display_order" => "integer",
             "parent_id" => "integer",
         ]);
@@ -47,6 +48,11 @@ class CategoryController extends Controller
         if ($request->has("parent_id"))
         {
             $category->parent_id = $request->parent_id;
+        }
+
+        if ($request->has("recursive"))
+        {
+            $category->recursive = implode(",", $request->recursive);
         }
 
         $category->url_name = generate_url($request->name);
@@ -84,6 +90,7 @@ class CategoryController extends Controller
         // 验证数据
         $request->validate([
             "name" => "required|max:255|unique:categories,name," . $category->id,
+            "recursive" => "array",
             "display_order" => "integer",
             "parent_id" => "integer",
         ]);
@@ -100,6 +107,11 @@ class CategoryController extends Controller
         {
             $category->parent_id = $request->parent_id;
         }
+        if ($request->has("recursive"))
+        {
+            $category->recursive = implode(",", $request->recursive);
+        }
+
         $isSaved = $category->save();
         if ($isSaved) {
             return response()->api($category, "修改成功!");

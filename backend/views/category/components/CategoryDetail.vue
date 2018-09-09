@@ -37,6 +37,7 @@
 
     const form = {
         name: '',
+        recursive: [],
         parent_id: 0,
         display_order: 99,
     }
@@ -100,7 +101,7 @@
                 fetch(id)
                     .then((response) => {
                         this.form = response.data.data
-                        this.parentData.push(response.data.data.parent_id)
+                        this.parentSelected = response.data.data.recursive.split(",").map(x => parseInt(x))
                     })
             },
             fetchAllData() {
@@ -115,8 +116,6 @@
                     if (valid) {
                         if (this.isEdit)
                         {
-                            console.log(this.form)
-                            return
                             if (this.form.id == this.form.parent_id)
                             {
                                 this.$alert('不能选自身作为父类别', '提示', {confirmButtonText: '确定'})
@@ -157,6 +156,7 @@
                 } else {
                     this.form.parent_id = 0
                 }
+                this.form.recursive = this.parentSelected
             }
         }
     }

@@ -1,15 +1,20 @@
 <template>
     <div id="material-index">
-        <el-upload
-                action="/admin/materials/upload"
-                :headers="headers"
-                list-type="picture-card"
-                :file-list="fileList"
-                :on-preview="handlePictureCardPreview"
-                :on-success="handleSuccess"
-                :before-remove="handleRemove">
-            <i class="el-icon-plus"></i>
-        </el-upload>
+        <ck-upload @action="handleImg($event)"></ck-upload>
+        <el-row>
+            <el-col :span="4" :key="item.id" v-for="item in fileList">
+                <el-card :body-style="{ padding: '0px', margin: '0 20px 30px 0', 'text-align': 'center' }">
+                    <img :src="item.url" class="image">
+                    <div style="padding: 14px;">
+                        <span>好吃的汉堡</span>
+                        <div class="bottom clearfix">
+                            <time class="time">{{ currentDate }}</time>
+                            <el-button type="text" class="button">操作按钮</el-button>
+                        </div>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
         <div class="page-section">
             <el-pagination
                     @size-change="handleSizeChange"
@@ -20,23 +25,17 @@
                     :total="total">
             </el-pagination>
         </div>
-        <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
     </div>
 </template>
 
 <script>
+    import ckUpload from "../../components/CkUpload"
     import { fetchList, del } from "../../api/materials"
-    import { HEADERS } from "../../api/upload"
     export default {
         name: "Index",
         data() {
             return {
-                headers: HEADERS,
                 fileList: [],
-                dialogImageUrl: "",
-                dialogVisible: false,
                 currentPage: 1,
                 pageSize: 15,
                 total: 0,
@@ -49,9 +48,7 @@
             fetchData() {
                 let query = Object.assign({page: this.currentPage, pageSize: this.pageSize, status: 1}, this.query)
                 fetchList(query).then((response) => {
-                    this.fileList = response.data.data.data.map((item) => {
-                        return { id: item.id, name: item.title, url: item.url}
-                    })
+                    this.fileList = response.data.data.data
                     this.currentPage = response.data.data.current_page
                     this.total = response.data.data.total
                 })
@@ -81,6 +78,12 @@
                 this.currentPage = val
                 this.fetchData();
             },
+            handleImg(img) {
+                this.fetchData()
+            },
+        },
+        components: {
+            ckUpload
         }
     }
 </script>

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import { fetchList } from "../api/tags"
+    import { all } from "../api/tags"
     export default {
         name: "CkTag",
         created() {
@@ -41,13 +41,12 @@
         },
         methods: {
             fetchData() {
-                let query = { pageSize: 100 }
-                fetchList(query)
+                all()
                     .then((response) => {
-                        let tagList = response.data.result.data
+                        let tagList = response.data.data
                         this.tagOptions = tagList.map((val) => {
                             return {
-                                label: val.tag_name,
+                                label: val.name,
                                 value: val.id,
                             }
                         })
