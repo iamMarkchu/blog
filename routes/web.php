@@ -20,6 +20,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/youdao', "YoudaoController@index");
+Route::get('/test', "TestController@index");
 
 Route::group(["middleware" => ["auth"], "prefix" => "admin"], function () {
     Route::get("/", function () {
