@@ -7,7 +7,7 @@
 <script>
     import categoryDetail from "./components/categoryDetail"
     export default {
-        name: "merchant-edit",
+        name: "CategoryEdit",
         components: { categoryDetail }
     }
 </script>

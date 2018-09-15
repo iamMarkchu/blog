@@ -38,7 +38,7 @@
         }
     ]
     export default {
-        name: "Category-Index",
+        name: "CategoryIndex",
         created() {
             this.colData = [
                 { prop: 'id', label: 'ID' },

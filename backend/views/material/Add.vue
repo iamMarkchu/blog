@@ -7,7 +7,7 @@
 <script>
     import materialDetail from "./components/MaterialDetail"
     export default {
-        name: "Add",
+        name: "MaterialAdd",
         components: {
             materialDetail
         }

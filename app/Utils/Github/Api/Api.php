@@ -23,7 +23,7 @@ class Api
         $this->personalAccessToken = config("github.personal_access_token");
         $this->http = new Client([
             "base_uri" => $this->apiRoot,
-            "timeout" => 2.0,
+            "timeout" => 5.0,
             "headers" => [
                 "Authorization" => "Bearer ".$this->personalAccessToken,
                 "Accept" => "application/vnd.github.v3+json"

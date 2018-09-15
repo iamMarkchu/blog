@@ -22,12 +22,19 @@ class ArticleController extends Controller
         $perPage = $request->input("per_page", 15);
         $status = $request->input("status", -1);
         $source = $request->input("source", 0);
-        if ($status != Article::STATUS_ALL) {
-            $map["status"] = $status;
+        $title = $request->input("title", "");
+        if ($status != Article::STATUS_ALL && !empty($status)) {
+            $map[] = ["status", "=", $status];
         }
         if ($source) {
-            $map["source"] = $source;
+            $map[] = ["source", "=", $source];
         }
+        if (!empty($title))
+        {
+            $map[] = ["title", "like", "%$title%"];
+        }
+
+
         $articles = Article::with(["user", "categories", "tags"])->where($map)->orderBy("created_at", "desc")->paginate($perPage);
 
         return response()->api($articles);

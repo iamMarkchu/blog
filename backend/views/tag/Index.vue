@@ -30,7 +30,7 @@
     import { fetchList, del, revoke } from '../../api/tags'
     import CkTablePage from "../../components/CkTablePage"
     export default {
-        name: "user-index",
+        name: "TagIndex",
         created() {
             this.colData = [
                 { prop: 'id', label: '编号' },

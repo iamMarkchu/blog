@@ -40,4 +40,6 @@ Route::group(["middleware" => ["auth"], "prefix" => "admin"], function () {
     Route::resource("articles", "ArticleController");
     Route::put("articles/{article}/publish", "ArticleController@publish");
     Route::put("articles/{article}/revoke", "ArticleController@revoke");
+
+    Route::resource("github", "GithubController");
 });

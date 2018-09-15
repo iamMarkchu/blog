@@ -7,7 +7,7 @@
 <script>
     import articleDetail from "./components/ArticleDetail"
     export default {
-        name: "Add",
+        name: "ArticleAdd",
         components: {
             articleDetail
         }

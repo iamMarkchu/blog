@@ -13,7 +13,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit('form')">{{ $route.name }}</el-button>
-                <el-button @click="$router.go(-1)">取消</el-button>
+                <el-button @click="onCancel()">取消</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -53,7 +53,11 @@
             isEdit: {
                 type: Boolean,
                 default: false
-            }
+            },
+            isArticle: {
+                type: Boolean,
+                default: false
+            },
         },
         data() {
             return {
@@ -90,7 +94,10 @@
                             add(this.form)
                                 .then((response) => {
                                     helper.message('创建成功!')
-                                    this.$router.go(-1)
+                                    if (!this.isArticle)
+                                        this.$router.go(-1)
+                                    else
+                                        this.$emit("finish")
                                 })
                         }
                     } else {
@@ -99,6 +106,12 @@
                     }
                 })
             },
+            onCancel() {
+                if (!this.isArticle)
+                    this.$router.go(-1)
+                else
+                    this.$emit("cancel")
+            }
         }
     }
 </script>

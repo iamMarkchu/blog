@@ -40,3 +40,22 @@ export function changeStatus(data) {
         data
     })
 }
+
+export function del(id) {
+    return request({
+        url: URL+ '/' + id,
+        method: 'delete'
+    })
+}
+export function publish(id) {
+    return request({
+        url: URL+ '/' + id + '/publish',
+        method: 'put'
+    })
+}
+export function revoke(id) {
+    return request({
+        url: URL+ '/' + id + '/revoke',
+        method: 'put'
+    })
+}

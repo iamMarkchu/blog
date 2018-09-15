@@ -7,7 +7,7 @@
 <script>
     import tagDetail from './components/tagDetail'
     export default {
-        name: "Add",
+        name: "TagAdd",
         components: {
             tagDetail
         }

@@ -11,7 +11,10 @@ class TestController extends Controller
     public function index()
     {
         $tree = new Tree();
-        $response = $tree->setOwner("iamMarkchu")->setRepos("blog_articles")->setTreeSha("master")->getTree();
-        dd($response);
+        $owner = config("github.owner");
+        $repos = config("github.repos");
+        $treeSha = config("github.tree_sha");
+        $response = $tree->setOwner($owner)->setRepos($repos)->setTreeSha($treeSha)->getTree();
+        dump($response);
     }
 }

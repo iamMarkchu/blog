@@ -52,6 +52,7 @@
             },
             onSuccess(response, file, fileList) {
                 this.$message("上传成功")
+                this.fileList = []
                 this.$emit('action', response)
             },
             onExceed(files, fileList) {
@@ -68,5 +69,8 @@
 </script>
 
 <style scoped>
-
+    #image-single {
+        display: inline-block;
+        margin-bottom: 20px;
+    }
 </style>
