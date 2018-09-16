@@ -34,7 +34,6 @@ class ArticleController extends Controller
             $map[] = ["title", "like", "%$title%"];
         }
 
-
         $articles = Article::with(["user", "categories", "tags"])->where($map)->orderBy("created_at", "desc")->paginate($perPage);
 
         return response()->api($articles);

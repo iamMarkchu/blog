@@ -5152,7 +5152,7 @@ input[type="button"].btn-block {
 .card-header {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(0, 0, 0, 0);
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 
@@ -5166,7 +5166,7 @@ input[type="button"].btn-block {
 
 .card-footer {
   padding: 0.75rem 1.25rem;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(0, 0, 0, 0);
   border-top: 1px solid rgba(0, 0, 0, 0.125);
 }
 
@@ -10475,5 +10475,38 @@ a.text-dark:focus {
   background-color: #fff;
   -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.article-card {
+  margin-bottom: 1rem;
+}
+
+.article-card .card-body {
+  padding: 0;
+}
+
+.article-card .card-header {
+  color: #555;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.article-item {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.tag-item {
+  margin-bottom: .5rem;
+}
+
+.right-card {
+  margin-bottom: 1rem;
+}
+
+footer {
+  padding: 1rem;
+  background-color: #000;
+  color: #fff;
 }
 

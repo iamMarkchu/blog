@@ -12,3 +12,31 @@
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
+
+.article-card {
+  margin-bottom: 1rem;
+}
+.article-card .card-body {
+  padding: 0;
+}
+.article-card .card-header {
+  color: #555;
+  font-size: 20px;
+  font-weight: 700;
+}
+.article-item {
+  display: inline-block;
+  margin-right: 1rem;
+}
+.tag-item {
+  margin-bottom: .5rem;
+}
+.right-card {
+  margin-bottom: 1rem;
+}
+
+footer {
+  padding: 1rem;
+  background-color: #000;
+  color: #fff;
+}

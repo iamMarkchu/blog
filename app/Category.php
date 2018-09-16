@@ -18,4 +18,9 @@ class Category extends Model
     {
         return $this->belongsTo("App\Category", "parent_id");
     }
+
+    public function articles()
+    {
+        return $this->belongsToMany("App\Article");
+    }
 }
