@@ -84,6 +84,12 @@ export const constantRouterMap = [
                 component: require('../views/article/Add')
             },
             {
+                name: '修改文章',
+                path: 'edit/:id',
+                component: require('../views/article/Edit'),
+                display: false,
+            },
+            {
                 name: '文章列表',
                 path: 'index',
                 component: require('../views/article/Index')

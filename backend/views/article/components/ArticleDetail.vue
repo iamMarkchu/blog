@@ -11,7 +11,7 @@
             <el-row>
                 <el-col :span="6">
                     <el-form-item label="标签">
-                        <ck-tag :default-tags="form.tags" @change="form.tags = $event"></ck-tag>
+                        <ck-tag ref="tag" :default-tags="form.tags" @change="form.tags = $event"></ck-tag>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -40,7 +40,6 @@
                         <el-cascader
                             placeholder="搜索类别"
                             :options="categoryData"
-                            @change="handleCategoryChange()"
                             v-model="form.categories"
                             filterable
                             clearable
@@ -76,7 +75,7 @@
                 </el-col>
             </el-row>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit('form')">{{ $route.name }}</el-button>
+                <el-button type="primary" @click="onSubmit('form')">确定</el-button>
                 <el-button @click="$router.go(-1)">取消</el-button>
             </el-form-item>
         </el-form>
@@ -84,10 +83,10 @@
             <material-index :is-article="true" @done="handleImageImport($event)"></material-index>
         </el-dialog>
         <el-dialog title="新增标签" :visible.sync="tagAdderShow" append-to-body>
-            <tag-add :is-article="true" @finish="handleTagAdd()" @cancel="tagAdderShow=false"></tag-add>
+            <tag-add :is-article="true" @finish="handleTagAdd($event)" @cancel="tagAdderShow=false"></tag-add>
         </el-dialog>
         <el-dialog title="新增类别" :visible.sync="categoryAdderShow" append-to-body>
-            <category-add :is-article="true" @finish="handleCategoryAdd()" @cancel="categoryAdderShow=false"></category-add>
+            <category-add :is-article="true" @finish="handleCategoryAdd($event)" @cancel="categoryAdderShow=false"></category-add>
         </el-dialog>
         <el-dialog title="github管理" :visible.sync="githubManagerShow" @open="openGithubManager" append-to-body>
             <ol>
@@ -100,9 +99,9 @@
 
 <script>
     import CkTag from "../../../components/CkTag"
-    import {tree} from "../../../api/categories";
-    import {fetchList} from "../../../api/github";
-    import {update, add} from "../../../api/articles";
+    import { tree } from "../../../api/categories";
+    import { fetchList } from "../../../api/github";
+    import { add, edit, update } from "../../../api/articles";
     import materialIndex from "../../../views/material/Index"
     import tagAdd from "../../../views/tag/components/tagDetail"
     import categoryAdd from "../../../views/category/components/categoryDetail"
@@ -154,11 +153,26 @@
             }
         },
         created() {
-            tree().then((response) => {
-                this.categoryData = response.data.data
-            })
+            // recursive.split(",").map(x => parseInt(x))
+            this.categoryTree()
+            if (this.isEdit)
+            {
+                let id = this.$route.params.id
+                edit(id).then((response) => {
+                    this.form = response.data.data
+                    this.form.tags = response.data.data.tags.map((item) => { return item.id })
+                    this.form.categories = response.data.data.categories.map((item) => { return item.id })
+                })
+            } else {
+                //
+            }
         },
         methods: {
+            categoryTree() {
+                tree().then((response) => {
+                    this.categoryData = response.data.data
+                })
+            },
             onSubmit(formName) {
                 console.log(this.$refs[formName])
                 this.$refs[formName].validate((valid) => {
@@ -206,11 +220,20 @@
                 this.form.content += "![image]("+ url + ")"
                 this.materialManagerShow = false
             },
-            handleTagAdd() {
-                alert("tag")
+            handleTagAdd(tag) {
+                this.$refs.tag.fetchData()
+                this.form.tags.push(tag.id)
+                this.tagAdderShow = false
             },
-            handleCategoryAdd() {
-                alert("category")
+            handleCategoryAdd(category) {
+                this.categoryTree()
+                let categories = category.recursive.split(",")
+                if (categories == [""])
+                    categories = []
+                categories = categories.map((val) => { return parseInt(val) })
+                categories.push(category.id)
+                this.form.categories = categories
+                this.categoryAdderShow = false
             }
         },
         components: {

@@ -144,6 +144,9 @@
             handleAdd() {
                 this.$router.push('/article/add')
             },
+            handleEdit(id) {
+                this.$router.push('/article/edit/'+ id)
+            },
             handleViewArticle(row) {
                 this.$message(row.url_name)
             },

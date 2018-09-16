@@ -60,8 +60,8 @@
                 let query = Object.assign({page: this.currentPage, pageSize: this.pageSize, status: 1}, this.query)
                 fetchList(query).then((response) => {
                     this.fileList = response.data.data.data
-                    this.currentPage = response.data.data.current_page
-                    this.total = response.data.data.total
+                    this.currentPage = response.data.current_page
+                    this.total = response.data.total
                 })
             },
             handlePictureCardPreview(file) {

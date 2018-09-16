@@ -33,6 +33,13 @@ export function fetch(id) {
     })
 }
 
+export function edit(id) {
+    return request({
+        url: URL + '/'+ id + '/edit',
+        method: 'get'
+    })
+}
+
 export function changeStatus(data) {
     return request({
         url: URL+ '/' + data.id + '/change',
