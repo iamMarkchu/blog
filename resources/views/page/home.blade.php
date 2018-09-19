@@ -4,6 +4,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
+                <div class="alert alert-success" role="alert">
+                    博客正在逐步完善中....
+                </div>
                 @foreach($articles as $article)
                     <div class="card article-card">
                         <div class="card-header">{{ $article->title }}</div>
@@ -23,7 +26,7 @@
                                 <span class="oi oi-person"></span>
                                 <span>{{ $article->user->name }}</span>
                             </div>
-                            <div class="article-item float-right">
+                            <div class="article-item float-right read_btn">
                                 <a href="{{ route("article", ["url_name" => $article->url_name]) }}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">阅读全文</a>
                             </div>
                         </div>
@@ -35,7 +38,7 @@
                 <div class="card right-card">
                     <div class="card-body">
                         <h5 class="card-title">公告栏</h5>
-                        我是公告栏
+                        <p>个人github: <a href="https://github.com/iamMarkchu/">https://github.com/iamMarkchu/</a></p>
                     </div>
                 </div>
                 <div class="card right-card">
@@ -52,6 +55,12 @@
                         @foreach($categories as $category)
                             <a href="{{ route("category", ["url_name" => $category->url_name]) }}" class="btn btn-outline-primary tag-item" role="button" aria-pressed="true">{{ $category->name }}</a>
                         @endforeach
+                    </div>
+                </div>
+                <div class="card right-card">
+                    <img class="card-img-top pad-1" src="https://mars-assets.qnssl.com/qiniulog/img-slogan-blue-en.png" alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text">本站图片均托管在<a href="https://portal.qiniu.com/signup?code=3lg7fmin8grbm" target="_blank">七牛云存储</a></p>
                     </div>
                 </div>
             </div>

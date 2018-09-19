@@ -8,6 +8,14 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+html, body,#app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+main {
+  min-height: 100%;
+}
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
@@ -28,6 +36,9 @@
   display: inline-block;
   margin-right: 1rem;
 }
+.read_btn {
+  margin-right: 0;
+}
 .tag-item {
   margin-bottom: .5rem;
 }
@@ -39,4 +50,8 @@ footer {
   padding: 1rem;
   background-color: #000;
   color: #fff;
+}
+
+.pad-1 {
+  padding: 1rem;
 }

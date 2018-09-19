@@ -19,7 +19,7 @@ Auth::routes();
 Route::get('/youdao', "YoudaoController@index");
 Route::get('/test', "TestController@index");
 
-Route::group(["middleware" => ["auth"], "prefix" => "admin"], function () {
+Route::group(["middleware" => ["auth", "checkLevel"], "prefix" => "admin"], function () {
     Route::get("/", function () {
         return view("admin");
     });

@@ -218,6 +218,8 @@
                 if (this.form.content != "")
                     this.form.content += "\n"
                 this.form.content += "![image]("+ url + ")"
+                if (this.form.cover == "")
+                    this.form.cover = url
                 this.materialManagerShow = false
             },
             handleTagAdd(tag) {

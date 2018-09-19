@@ -10,7 +10,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
-
+                <a class="nav-link active" href="#">TBD</a>
+                <a class="nav-link" href="#">TBD</a>
+                <a class="nav-link" href="#">TBD</a>
             </ul>
 
             <!-- Right Side Of Navbar -->
