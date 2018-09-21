@@ -10,7 +10,7 @@
                 @foreach($articles as $article)
                     <div class="card article-card">
                         <div class="card-header">{{ $article->title }}</div>
-                        <img src="{{ $article->cover }}" alt="mongodb" class="card-img-top" width="100%">
+                        <img src="{{ $article->cover }}" alt="" class="card-img-top" width="100%">
                         <div class="card-footer text-muted">
                             <div class="article-item">
                                 <span class="oi oi-timer"></span>
