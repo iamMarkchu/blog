@@ -17,7 +17,7 @@ class Markdown extends Parsedown
         $image = parent::inlineImage($excerpt);
         // dd($image);
         $image['element']['attributes']['data-src'] = $image['element']['attributes']['src'];
-        $image['element']['attributes']['src'] = '/blank.gif';
+        // $image['element']['attributes']['src'] = '/blank.gif';
         $image['element']['attributes']['class'] = 'img';
         return $image;
     }
