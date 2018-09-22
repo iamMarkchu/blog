@@ -33,7 +33,7 @@ Route::resource("/admin/articles", "ArticleController");
 Route::put("/admin/articles/{article}/publish", "ArticleController@publish");
 Route::put("/admin/articles/{article}/revoke", "ArticleController@revoke");
 
-Route::resource("github", "GithubController");
+Route::resource("/admin/github", "GithubController");
 
 // 博客页面
 
