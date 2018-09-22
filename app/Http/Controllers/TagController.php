@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-class TagController extends Controller
+class TagController extends AdminBaseController
 {
     /**
      * Display a listing of the resource.

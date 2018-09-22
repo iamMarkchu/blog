@@ -6,7 +6,7 @@ use App\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CategoryController extends Controller
+class CategoryController extends AdminBaseController
 {
     /**
      * Display a listing of the resource.

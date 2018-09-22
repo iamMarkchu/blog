@@ -11,13 +11,13 @@
 |
 */
 
-Route::Group(['middleware' => ['auth:api']], function () {
-    Route::resource("tags", "TagController");
-    Route::resource("categories", "CategoryController");
-    Route::resource("materials", "MaterialController");
-    Route::post("materials/upload", "MaterialController@upload");
-
-    Route::resource("articles", "ArticleController");
-    Route::put("articles/{article}/publish", "ArticleController@publish");
-    Route::put("articles/{article}/revoke", "ArticleController@revoke");
-});
+//Route::Group(['middleware' => ['auth:api']], function () {
+//    Route::resource("tags", "TagController");
+//    Route::resource("categories", "CategoryController");
+//    Route::resource("materials", "MaterialController");
+//    Route::post("materials/upload", "MaterialController@upload");
+//
+//    Route::resource("articles", "ArticleController");
+//    Route::put("articles/{article}/publish", "ArticleController@publish");
+//    Route::put("articles/{article}/revoke", "ArticleController@revoke");
+//});

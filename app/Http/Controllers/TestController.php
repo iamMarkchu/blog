@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Utils\Github\Api\Tree;
 use Illuminate\Http\Request;
 
-class TestController extends Controller
+class TestController extends AdminBaseController
 {
     //
     public function index()

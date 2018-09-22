@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Vote;
 use Illuminate\Http\Request;
 
-class VoteController extends Controller
+class VoteController extends AdminBaseController
 {
     /**
      * Display a listing of the resource.
