@@ -19,9 +19,6 @@
 <body>
     <div id="app">
         @include("layouts.nav")
-        @if (Route::currentRouteName() == "home")
-            @include("layouts.banner")
-        @endif
         <main class="py-4">
             @yield('content')
         </main>

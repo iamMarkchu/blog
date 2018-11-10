@@ -18,14 +18,13 @@ class Markdown extends Parsedown
         // dd($image);
         $image['element']['attributes']['data-src'] = $image['element']['attributes']['src'];
         // $image['element']['attributes']['src'] = '/blank.gif';
-        $image['element']['attributes']['class'] = 'img';
+        $image['element']['attributes']['class'] = 'img-fluid';
         return $image;
     }
 
     protected function inlineLink($excerpt)
     {
         $link = parent::inlineLink($excerpt);
-        // dd($link);
         if(strpos($excerpt['context'], '!') !== 0 && isset($link['element']['attributes']['href']))
         {
             $link['element']['attributes']['target'] = '_blank';
@@ -36,5 +35,11 @@ class Markdown extends Parsedown
             }
         }
         return $link;
+    }
+
+    protected function blockHeader($line) {
+        $line = parent::blockHeader($line);
+        $line['element']['attributes']['id'] = $line['element']['text'];
+        return $line;
     }
 }

@@ -13,6 +13,10 @@ html, body,#app {
   padding: 0;
   height: 100%;
 }
+body {
+  position: relative;
+  line-height: 2;
+}
 main {
   min-height: 100%;
 }
@@ -53,5 +57,18 @@ footer {
 }
 
 .pad-1 {
+  padding: 1rem;
+}
+
+// article区域
+.article-body {
+  padding: 25px;
+}
+.article-body h2,h3,h4,h5,h6 {
+  margin-bottom: 15px;
+}
+.article-body pre {
+  margin-bottom: 1rem;
+  background-color: #f7f7f9;
   padding: 1rem;
 }
