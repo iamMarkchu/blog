@@ -154,6 +154,10 @@ class ArticleController extends AdminBaseController
                 $article->tags()->sync($request->input("tags"));
             }
 
+            // 清除缓存
+            $cacheKey = config('cachekey.cache_articles_page').md5($article->url_name);
+            clear_page_cache($cacheKey);
+
             return response()->api($article, "文章修改成功!");
         } else {
             return response()->api($article, "文章修改失败!", 500);

@@ -6,12 +6,18 @@ use App\Article;
 use App\Utils\Markdown\Markdown;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redis;
 
 class ArticleController extends Controller
 {
     //
     public function index($url_name)
     {
+        // 缓存页面的key
+        $cacheKey = config('cachekey.cache_articles_page').md5($url_name);
+        if ($html = Redis::get($cacheKey)) {
+            return $html;
+        }
         $article = Article::with(["categories", "tags", "user"])->where(["status" => Article::STATUS_NORMAL, "url_name" => $url_name])->first();
         if (!$article)
             abort(404);
@@ -44,6 +50,10 @@ class ArticleController extends Controller
             }
         }
 
-        return view("page.article", compact("article","list"));
+        $html = view("page.article", compact("article","list"));
+        // 缓存页面
+        Redis::set($cacheKey, $html);
+
+        return $html;
     }
 }

@@ -74,3 +74,9 @@ if (!function_exists("youdao_access2_url")) {
         return "https://note.youdao.com/oauth/authorize2?".http_build_query($params);
     }
 }
+
+if (!function_exists("clear_page_cache")) {
+    function clear_page_cache($key) {
+        return Redis::del($key);
+    }
+}

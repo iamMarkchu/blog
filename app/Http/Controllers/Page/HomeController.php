@@ -7,12 +7,18 @@ use App\Category;
 use App\Tag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redis;
 
 class HomeController extends Controller
 {
     //
     public function index()
     {
+        // 缓存页面的key
+        $cacheKey = config('cachekey.cache_home_page');
+        if ($html = Redis::get($cacheKey)) {
+            return $html;
+        }
         $map = [];
         $map[] = ["status", "=", Article::STATUS_NORMAL];
         $perPage = 15;
@@ -26,6 +32,8 @@ class HomeController extends Controller
         $map[] = ["status", "=", Category::STATUS_NORMAL];
         $map[] = ["parent_id", "=", 0];
         $categories = Category::where($map)->orderBy("display_order", "asc")->limit(9)->get();
-        return view("page.home", compact("articles", "tags", "categories"));
+        $html = view("page.home", compact("articles", "tags", "categories"));
+        Redis::setex($cacheKey, 1800, $html);
+        return $html;
     }
 }

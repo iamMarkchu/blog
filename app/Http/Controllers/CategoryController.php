@@ -114,6 +114,10 @@ class CategoryController extends AdminBaseController
 
         $isSaved = $category->save();
         if ($isSaved) {
+            // 清除缓存
+            $cacheKey = config('cachekey.cache_articles_page').md5($category->url_name);
+            clear_page_cache($cacheKey);
+
             return response()->api($category, "修改成功!");
         } else {
             return response()->api($category, "修改失败!", 500);

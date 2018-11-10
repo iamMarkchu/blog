@@ -89,6 +89,10 @@ class TagController extends AdminBaseController
         }
         $isSaved = $tag->save();
         if ($isSaved) {
+            // 清除缓存
+            $cacheKey = config('cachekey.cache_tags_page').md5($tag->url_name);
+            clear_page_cache($cacheKey);
+
             return response()->api($tag, "修改成功!");
         } else {
             return response()->api($tag, "修改失败!", 500);
