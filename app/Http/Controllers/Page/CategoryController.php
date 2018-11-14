@@ -11,9 +11,7 @@ class CategoryController extends Controller
     //
     public function index($url_name)
     {
-        // 缓存页面的key
-        $cacheKey = config("cachekey.cache_categories_page").md5($url_name);
-        if ($html = Redis::get($cacheKey)) {
+        if ($html = get_page_cache('category', $url_name)) {
             return $html;
         }
         $map = [];
@@ -24,7 +22,7 @@ class CategoryController extends Controller
             abort(404);
 
         $html = view("page.category", compact("category"));
-        Redis::set($cacheKey, $html);
+        set_page_cache('category', $url_name, $html);
         return $html;
     }
 }

@@ -13,9 +13,7 @@ class ArticleController extends Controller
     //
     public function index($url_name)
     {
-        // 缓存页面的key
-        $cacheKey = config('cachekey.cache_articles_page').md5($url_name);
-        if ($html = Redis::get($cacheKey)) {
+        if ($html = get_page_cache('article', $url_name)) {
             return $html;
         }
         $article = Article::with(["categories", "tags", "user"])->where(["status" => Article::STATUS_NORMAL, "url_name" => $url_name])->first();
@@ -51,8 +49,7 @@ class ArticleController extends Controller
         }
 
         $html = view("page.article", compact("article","list"));
-        // 缓存页面
-        Redis::set($cacheKey, $html);
+        set_page_cache('article', $url_name, $html);
 
         return $html;
     }

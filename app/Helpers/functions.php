@@ -80,3 +80,56 @@ if (!function_exists("clear_page_cache")) {
         return Redis::del($key);
     }
 }
+
+if (!function_exists('get_page_cache')) {
+    function get_page_cache(string $type, string $url='') {
+        if (config('app.debug'))
+            return false;
+        $cacheKey = get_page_cache_key($type);
+        return Redis::get($cacheKey);
+    }
+}
+
+if (!function_exists('set_page_cache')) {
+    /**
+     * @param string $type
+     * @param string $url
+     * @param string $content
+     * @return bool|string
+     */
+    function set_page_cache(string $type, string $url, string $content='') {
+//        if (config('app.debug'))
+//            return false;
+        $cacheKey = get_page_cache_key($type, $url);
+        echo $cacheKey;
+        return Redis::setex($cacheKey, 1800, $content);
+    }
+}
+
+if (!function_exists('get_page_cache_key')) {
+    /**
+     * @param string $type
+     * @param string $url
+     * @return bool|\Illuminate\Config\Repository|mixed|string
+     */
+    function get_page_cache_key(string $type, string $url) {
+        switch ($type) {
+            case 'home':
+                $cacheKey = config('cachekey.cache_home_page');
+                break;
+            case 'article':
+                $cacheKey = config('cachekey.cache_articles_page').md5($url);
+                break;
+            case 'tag':
+                $cacheKey = config('cachekey.cache_tags_page').md5($url);
+                break;
+            case 'category':
+                $cacheKey = config("cachekey.cache_categories_page").md5($url);
+                break;
+            default:
+                return false;
+        }
+
+        return $cacheKey;
+    }
+}
