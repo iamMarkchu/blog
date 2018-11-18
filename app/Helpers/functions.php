@@ -98,10 +98,9 @@ if (!function_exists('set_page_cache')) {
      * @return bool|string
      */
     function set_page_cache(string $type, string $url, string $content='') {
-//        if (config('app.debug'))
-//            return false;
+        if (config('app.debug'))
+            return false;
         $cacheKey = get_page_cache_key($type, $url);
-        echo $cacheKey;
         return Redis::setex($cacheKey, 1800, $content);
     }
 }

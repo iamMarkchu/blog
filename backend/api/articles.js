@@ -2,6 +2,7 @@ import request from '../utils/request'
 
 const URL = '/articles'
 
+// 添加文章接口
 export function add(data) {
     return request({
         url: URL,
@@ -10,6 +11,7 @@ export function add(data) {
     })
 }
 
+// 更新文章接口
 export function update(data, id) {
     return request({
         url: URL + '/'+ id,
@@ -18,6 +20,7 @@ export function update(data, id) {
     })
 }
 
+// 获取文章列表接口
 export function fetchList(query) {
     return request({
         url: URL,
@@ -26,6 +29,7 @@ export function fetchList(query) {
     })
 }
 
+// 用id获取指定文章接口
 export function fetch(id) {
     return request({
         url: URL + '/'+ id,
@@ -35,7 +39,7 @@ export function fetch(id) {
 
 export function edit(id) {
     return request({
-        url: URL + '/'+ id + '/edit',
+        url: URL + '/'+ id,
         method: 'get'
     })
 }
@@ -54,12 +58,14 @@ export function del(id) {
         method: 'delete'
     })
 }
+
 export function publish(id) {
     return request({
         url: URL+ '/' + id + '/publish',
         method: 'put'
     })
 }
+
 export function revoke(id) {
     return request({
         url: URL+ '/' + id + '/revoke',

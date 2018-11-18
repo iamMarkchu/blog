@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTagRequest;
+use App\Http\Requests\UpdateTagRequest;
+use App\Repositories\TagRepository;
 use App\Tag;
 use App\Utils\Baidu\Translate;
 use Illuminate\Http\Request;
@@ -10,6 +13,17 @@ use Illuminate\Support\Facades\Auth;
 
 class TagController extends AdminBaseController
 {
+    protected $tag;
+
+    /**
+     * TagController constructor.
+     * @param $tag
+     */
+    public function __construct(TagRepository $tag)
+    {
+        $this->tag = $tag;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,36 +32,25 @@ class TagController extends AdminBaseController
      */
     public function index(Request $request)
     {
-        $perPage = $request->input("per_page", 15);
-        $tags = Tag::with(["user"])->orderBy("created_at", "desc")->paginate($perPage);
-        return response()->api($tags);
+        return response()->api($this->tag->page($request->input('pageSize', 15)));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param StoreTagRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTagRequest $request)
     {
-        // 验证数据
-        $request->validate([
-            "name" => "required|unique:tags|max:255",
-            "display_order" => "integer",
-        ]);
-
-        // 组装数据
-        $tag = new Tag;
-        $tag->name = $request->name;
-        if ($request->has("display_order"))
-            $tag->display_order = $request->display_order;
-        $tag->url_name = generate_url($request->name);
-        $tag->status = Tag::STATUS_NORMAL;
-        $tag->user_id = Auth::id();
-        $isSaved = $tag->save();
-
-        if ($isSaved) {
+        $data = [
+            'url_name' => $request->input('url_name'),
+            'name' => $request->input('name'),
+            'display_order' => $request->input('display_order'),
+            'status' => Tag::STATUS_NORMAL,
+            'user_id' => Auth::id(),
+        ];
+        if ($tag = $this->tag->create($data)) {
             return response()->api($tag, "保存成功!");
         } else {
             return response()->api($tag, "保存失败!", 500);
@@ -55,44 +58,33 @@ class TagController extends AdminBaseController
     }
 
     /**
-     * how the form for editing the specified resource.
-     * @param Tag $tag
+     * Display the specified resource.
+     *
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Tag $tag)
+    public function show(int $id)
     {
-        return response()->api($tag);
+        return response()->api($this->tag->byId($id), "获取成功!");
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Tag $tag
+     * @param UpdateTagRequest $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tag $tag)
+    public function update(UpdateTagRequest $request, int $id)
     {
-        // 验证数据
-        $request->validate([
-            "name" => "required|max:255|unique:tags,name," . $tag->id,
-            "display_order" => "integer",
-        ]);
+        $data = [
+            'url_name' => $request->input('url_name'),
+            'name' => $request->input('name'),
+            'display_order' => $request->input('display_order'),
+        ];
 
-        $isNameChanged = !($tag->name == $request->name);
-        if ($isNameChanged) {
-            $tag->name = $request->name;
-            $tag->url_name = generate_url($request->name);
-        }
-        if ($request->has("display_order")) {
-            $tag->display_order = $request->display_order;
-        }
-        $isSaved = $tag->save();
-        if ($isSaved) {
-            // 清除缓存
-            $cacheKey = config('cachekey.cache_tags_page').md5($tag->url_name);
-            clear_page_cache($cacheKey);
-
+        $tag = $this->tag->update($data, $id);
+        if ($tag) {
             return response()->api($tag, "修改成功!");
         } else {
             return response()->api($tag, "修改失败!", 500);
@@ -102,32 +94,24 @@ class TagController extends AdminBaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Tag $tag
+     * @param  int id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tag $tag)
+    public function destroy(int $id)
     {
-        if ($tag->status != Tag::STATUS_DELETED) {
-            $tag->status = Tag::STATUS_DELETED;
-            $isDeleted = $tag->save();
+        if ($tag = $this->tag->del($id)) {
             return response()->api($tag, "删除成功!");
         } else {
             return response()->api($tag, "该标签已经删除了！请勿重复操作!");
         }
     }
 
-    public function revoke(Tag $tag)
+    public function revoke(int $id)
     {
-        if ($tag->user_id != Auth::id()) {
-            return response()->api([], "你无权撤销此文章!", 500);
-        }
-
-        if ($tag->status == Tag::STATUS_DELETED) {
-            $tag->status = Tag::STATUS_NORMAL;
-            $isPublished = $tag->save();
-            return response()->api($tag, "撤销成功!");
+        if ($tag = $this->tag->rev($id)) {
+            return response()->api($tag, "恢复成功!");
         } else {
-            return response()->api($tag, "该文章标签撤销了，请勿重复操作");
+            return response()->api($tag, "该标签已经恢复了！请勿重复操作!");
         }
     }
 

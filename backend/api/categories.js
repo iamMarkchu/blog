@@ -35,7 +35,7 @@ export function fetchAll() {
 
 export function fetch(id) {
     return request({
-        url: URL + '/'+ id + '/edit',
+        url: URL + '/'+ id,
         method: 'get'
     })
 }

@@ -2,13 +2,17 @@
 
 namespace App;
 
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model
 {
+    use Filterable;
+
+    protected $fillable  = ['url_name', 'title', 'content', 'cover', 'display_order', 'status', 'source', 'user_id'];
     const STATUS_NORMAL = 1;
     const STATUS_DELETED = 2;
-    const STATUS_PENDING = 3;
+    const STATUS_PENDING = 0;
     const STATUS_ALL = -1;
 
     public function user()

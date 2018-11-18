@@ -54,7 +54,7 @@
                 let query = Object.assign({page: this.currentPage, pageSize: this.pageSize}, this.query)
                 this.fetchList(query)
                     .then((response) => {
-                        console.log(response)
+                        console.log(response.data.data)
                         this.tableData = response.data.data.data
                         this.currentPage = response.data.data.current_page
                         this.total = response.data.data.total
@@ -70,12 +70,12 @@
                 this.fetchData();
             },
             getWidth(col) {
-                let width = 180
-                if (col.prop == 'id')
-                {
-                    width = 100
-                }
-                return width
+                // let width = 180
+                // if (col.prop == 'id')
+                // {
+                //     width = 100
+                // }
+                // return width
             }
         }
     }

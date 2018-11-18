@@ -3,12 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
+use App\Repositories\ArticleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class ArticleController extends AdminBaseController
 {
+    protected $article;
+
+    /**
+     * ArticleController constructor.
+     * @param $article
+     */
+    public function __construct(ArticleRepository $article)
+    {
+        parent::__construct();
+        $this->article = $article;
+    }
 
     /**
      * Display a listing of the resource.
@@ -18,201 +31,113 @@ class ArticleController extends AdminBaseController
      */
     public function index(Request $request)
     {
-        $map = [];
-        $perPage = $request->input("per_page", 15);
-        $status = $request->input("status", -1);
-        $source = $request->input("source", 0);
-        $title = $request->input("title", "");
-        if ($status != Article::STATUS_ALL && !empty($status)) {
-            $map[] = ["status", "=", $status];
-        }
-        if ($source) {
-            $map[] = ["source", "=", $source];
-        }
-        if (!empty($title))
-        {
-            $map[] = ["title", "like", "%$title%"];
-        }
-
-        $articles = Article::with(["user", "categories", "tags"])->where($map)->orderBy("created_at", "desc")->paginate($perPage);
-
-        return response()->api($articles);
+        return response()->api($this->article->page($request->all(), $request->input('pageSize', 15)));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Http\Requests\StoreArticleRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreArticleRequest $request)
     {
-        // 验证数据
-        $request->validate([
-            "title"         => "required|unique:articles|max:255",
-            "content"       => "required",
-            "cover"         => "url|nullable",
-            "display_order" => "integer|nullable",
-            "source"        => Rule::in([1, 2]),
-            "categories"    => "array|nullable",
-            "tags"          => "array|nullable",
-        ]);
-        $article = new Article;
+        $data = [
+            'url_name' => $request->input('url_name'),
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'cover' => $request->input('cover'),
+            'display_order' => $request->input('display_order'),
+            'source' => $request->input('source'),
+            'status ' => Article::STATUS_NORMAL,
+            'user_id' => Auth::id(),
+            'categories' => $request->input('categories'),
+            'tags' => $request->input('tags'),
+        ];
 
-        $article->title = $request->input("title");
-        $article->url_name = generate_url($article->title);
-        $article->content = $request->input("content");
-        if ($request->filled("cover")) {
-            $article->cover = $request->input("cover");
-        }
-        if ($request->filled("display_order")) {
-            $article->display_order = $request->input("display_order");
-        }
-        $article->source = $request->input("source");
-        $article->status = Article::STATUS_PENDING;
-        $article->user_id = Auth::id();
-
-        $isSaved = $article->save();
-        if ($isSaved) {
-            if ($request->filled("categories") and !empty($request->input("categories"))) {
-                $article->categories()->sync($request->input("categories"));
-            }
-            if ($request->filled("tags") and !empty($request->input("tags"))) {
-                $article->tags()->sync($request->input("tags"));
-            }
-
+        $article = $this->article->create($data);
+        if ($article) {
             return response()->api($article, "文章保存成功!");
         } else {
-            return response()->api($article, "文章保存失败!", 500);
+            return response()->api([], "文章保存失败!", 500);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Article $article
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Article $article)
+    public function show(int $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Article $article
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Article $article)
-    {
-        $article->categories;
-        $article->tags;
-
-        return response()->api($article);
+        return response()->api($this->article->byIdWithCategoriesAndTags($id), "获取成功!");
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Article $article
+     * @param UpdateArticleRequest $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, int $id)
     {
-        // 验证数据
-        $request->validate([
-            "title"         => "required|max:255|unique:articles,title," . $article->id,
-            "content"       => "required",
-            "cover"         => "url|nullable",
-            "display_order" => "integer|nullable",
-            "source"        => Rule::in([1, 2]),
-            "categories"    => "array|nullable",
-            "tags"          => "array|nullable",
-        ]);
-
-        $isNameChanged = !($article->title == $request->title);
-        if ($isNameChanged) {
-            $article->title = $request->title;
-            $article->url_name = generate_url($request->title);
-        }
-        $article->content = $request->input("content");
-        if ($request->filled("cover")) {
-            $article->cover = $request->input("cover");
-        }
-        if ($request->filled("display_order")) {
-            $article->display_order = $request->input("display_order");
-        }
-        $article->source = $request->input("source");
-        $isSaved = $article->save();
-        if ($isSaved) {
-            if ($request->filled("categories")) {
-                $article->categories()->sync($request->input("categories"));
-            }
-            if ($request->filled("tags") and !empty($request->input("tags"))) {
-                $article->tags()->sync($request->input("tags"));
-            }
-
-            // 清除缓存
-            $cacheKey = config('cachekey.cache_articles_page').md5($article->url_name);
-            clear_page_cache($cacheKey);
-
-            return response()->api($article, "文章修改成功!");
-        } else {
-            return response()->api($article, "文章修改失败!", 500);
-        }
+        $data = [
+            'url_name' => $request->input('url_name'),
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'cover' => $request->input('cover'),
+            'display_order' => $request->input('display_order'),
+            'source' => $request->input('source'),
+            'categories' => $request->input('categories'),
+            'tags' => $request->input('tags'),
+        ];
+        $article = $this->article->update($data, $id);
+        return response()->api($article, "文章修改成功!");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Article $article
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy(int $id)
     {
-        if ($article->user_id != Auth::id()) {
-            return response()->api([], "你无权删除此文章!", 500);
-        }
-
-        if ($article->status != Article::STATUS_DELETED) {
-            $article->status = Article::STATUS_DELETED;
-            $isDeleted = $article->save();
-
+        $article = $this->article->del($id);
+        if ($article) {
             return response()->api($article, "删除成功!");
         } else {
-            return response()->api($article, "该文章已经删除了！请勿重复操作!");
+            return response()->api([], $this->article->getError(), 500);
         }
     }
 
-    public function publish(Article $article)
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function publish(int $id)
     {
-        if ($article->user_id != Auth::id()) {
-            return response()->api([], "你无权发布此文章!", 500);
-        }
-
-        if ($article->status != Article::STATUS_NORMAL) {
-            $article->status = Article::STATUS_NORMAL;
-            $isPublished = $article->save();
+        $article = $this->article->pub($id);
+        if ($article) {
             return response()->api($article, "发布成功!");
         } else {
-            return response()->api($article, "该文章已经发布了，请勿重复操作");
+            return response()->api([], $this->article->getError(), 500);
         }
     }
 
-    public function revoke(Article $article)
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function revoke(int $id)
     {
-        if ($article->user_id != Auth::id()) {
-            return response()->api([], "你无权撤销此文章!", 500);
-        }
-
-        if ($article->status == Article::STATUS_DELETED) {
-            $article->status = Article::STATUS_NORMAL;
-            $isPublished = $article->save();
+        $article = $this->article->rev($id);
+        if ($article) {
             return response()->api($article, "撤销成功!");
         } else {
-            return response()->api($article, "该文章已经撤销了，请勿重复操作");
+            return response()->api([], $this->article->getError(), 500);
         }
     }
 }

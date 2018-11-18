@@ -63,7 +63,9 @@
             </el-table-column>
             <el-table-column slot="status" label="状态" align="center">
                 <template slot-scope="scope">
-                    <el-tag :type="showStatus(scope.row.status, 'tag')">{{ showStatus(scope.row.status, "text") }}</el-tag>
+                    <el-tag v-if="scope.row.status == '0'" type="info">待发布</el-tag>
+                    <el-tag v-else-if="scope.row.status == '1'" type="success">正常</el-tag>
+                    <el-tag v-else type="danger">已删除</el-tag>
                 </template>
             </el-table-column>
             <el-table-column slot="source" label="来源" align="center">
@@ -84,7 +86,7 @@
             <el-table-column slot="operation" label="操作" align="center" width="220">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="handleEdit(scope.row.id)">编辑</el-button>
-                    <el-button type="success" size="mini" @click="handleChangeStatus(scope.row, 1)" v-show="scope.row.status == 3">发布</el-button>
+                    <el-button type="success" size="mini" @click="handleChangeStatus(scope.row, 1)" v-show="scope.row.status == 0">发布</el-button>
                     <el-button size="mini" @click="handleChangeStatus(scope.row, 2)" v-show="scope.row.status == 2">恢复</el-button>
                     <el-button type="danger" size="mini" @click="handleChangeStatus(scope.row, 3)" v-show="scope.row.status == 1">删除</el-button>
                 </template>
@@ -108,7 +110,7 @@
     ]
     const statusOptions = [
         { key: '1', value: '1', label: '有效' },
-        { key: '3', value: '3', label: '待发布' },
+        { key: '0', value: '0', label: '待发布' },
         { key: '2', value: '2', label: '已删除' },
     ]
     export default {
@@ -151,11 +153,12 @@
                 this.$message(row.url_name)
             },
             showStatus(status, type) {
-                let statusNum = parseInt(status) - 1
-                const statusMap = [
+                let statusNum = parseInt(status)
+                console.log(statusNum)
+                let statusMap = [
+                    ["info", "待发布"],
                     ["success", "正常"],
                     ["danger", "已删除"],
-                    ["info", "待发布"],
                 ]
                 if (type == "tag")
                 {
@@ -166,7 +169,7 @@
             },
             showSource(source, type) {
                 let sourceNum = parseInt(source) - 1
-                const sourceMap = [
+                let sourceMap = [
                     ["success", "原创"],
                     ["info", "转载"],
                 ]

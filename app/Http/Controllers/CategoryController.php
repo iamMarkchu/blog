@@ -3,11 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
+use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends AdminBaseController
 {
+
+    protected $category;
+
+    /**
+     * CategoryController constructor.
+     * @param CategoryRepository $category
+     */
+    public function __construct(CategoryRepository $category)
+    {
+        parent::__construct();
+        $this->category = $category;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,51 +31,29 @@ class CategoryController extends AdminBaseController
      */
     public function index(Request $request)
     {
-        $perPage = $request->input("per_page", 15);
-        $categories = Category::with(["parentCategory", "user"])->orderBy("created_at", "desc")->paginate($perPage);
-        return response()->api($categories);
+        return response()->api($this->category->page($request->input('pageSize', 15)));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param StoreCategoryRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        // 验证数据
-        $request->validate([
-            "name" => "required|unique:categories|max:255",
-            "recursive" => "array",
-            "display_order" => "integer",
-            "parent_id" => "integer",
-        ]);
+        $data = [
+            'url_name' => $request->input('url_name'),
+            'name' => $request->input('name'),
+            'recursive' => implode(',', $request->input('recursive')),
+            'parent_id' => $request->input('parent_id', 0),
+            'display_order' => $request->input('display_order'),
+            'status' => Category::STATUS_NORMAL,
+            'user_id' => Auth::id(),
+        ];
+        $category = $this->category->create($data);
 
-        // 组装数据
-        $category = new Category;
-        $category->name = $request->name;
-        if ($request->has("display_order"))
-        {
-            $category->display_order = $request->display_order;
-        }
-
-        if ($request->has("parent_id"))
-        {
-            $category->parent_id = $request->parent_id;
-        }
-
-        if ($request->has("recursive"))
-        {
-            $category->recursive = implode(",", $request->recursive);
-        }
-
-        $category->url_name = generate_url($request->name);
-        $category->status = Category::STATUS_NORMAL;
-        $category->user_id = Auth::id();
-        $isSaved = $category->save();
-
-        if ($isSaved) {
+        if ($category) {
             return response()->api($category, "保存成功!");
         } else {
             return response()->api($category, "保存失败!", 500);
@@ -68,56 +61,34 @@ class CategoryController extends AdminBaseController
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display the specified resource.
      *
-     * @param  \App\Category  $category
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function show(int $id)
     {
-        return response()->api($category);
+        return response()->api($this->category->byId($id), "获取成功!");
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Category  $category
+     * @param UpdateCategoryRequest $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, int $id)
     {
-        // 验证数据
-        $request->validate([
-            "name" => "required|max:255|unique:categories,name," . $category->id,
-            "recursive" => "array",
-            "display_order" => "integer",
-            "parent_id" => "integer",
-        ]);
-
-        $isNameChanged = !($category->name == $request->name);
-        if ($isNameChanged) {
-            $category->name = $request->name;
-            $category->url_name = generate_url($request->name);
-        }
-        if ($request->has("display_order")) {
-            $category->display_order = $request->display_order;
-        }
-        if ($request->has("parent_id"))
-        {
-            $category->parent_id = $request->parent_id;
-        }
-        if ($request->has("recursive"))
-        {
-            $category->recursive = implode(",", $request->recursive);
-        }
-
-        $isSaved = $category->save();
-        if ($isSaved) {
-            // 清除缓存
-            $cacheKey = config('cachekey.cache_articles_page').md5($category->url_name);
-            clear_page_cache($cacheKey);
-
+        $data = [
+            'url_name' => $request->input('url_name'),
+            'name' => $request->input('name'),
+            'recursive' => implode(',', $request->input('recursive')),
+            'parent_id' => $request->input('parent_id', 0),
+            'display_order' => $request->input('display_order'),
+        ];
+        $category = $this->category->update($data, $id);
+        if ($category) {
             return response()->api($category, "修改成功!");
         } else {
             return response()->api($category, "修改失败!", 500);
@@ -127,44 +98,34 @@ class CategoryController extends AdminBaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Category  $category
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(int $id)
     {
-        if ($category->status != Category::STATUS_DELETED) {
-            $category->status = Category::STATUS_DELETED;
-            $isDeleted = $category->save();
+        if ($category = $this->category->del($id)) {
             return response()->api($category, "删除成功!");
         } else {
-            return response()->api($category, "该类别已经删除了！请勿重复操作!");
+            return response()->api([], $this->category->getError());
         }
     }
 
-    public function revoke(Category $category)
+    public function revoke(int $id)
     {
-        if ($category->user_id != Auth::id()) {
-            return response()->api([], "你无权撤销此类别!", 500);
-        }
-
-        if ($category->status == Category::STATUS_DELETED) {
-            $category->status = Category::STATUS_NORMAL;
-            $isPublished = $category->save();
-            return response()->api($category, "撤销成功!");
+        if ($category = $this->category->rev($id)) {
+            return response()->api($category, "恢复成功!");
         } else {
-            return response()->api($category, "该文章类别撤销了，请勿重复操作");
+            return response()->api([], $this->category->getError());
         }
     }
 
     public function all()
     {
-        return response()->api(Category::with(["parentCategory", "user"])->orderBy("created_at", "desc")->get());
+        return response()->api($this->category->all());
     }
 
     public function tree()
     {
-        $categories = Category::with(["parentCategory", "user"])->orderBy("created_at", "desc")->get();
-        $data = cascader_item($categories->toArray());
-        return response()->api($data);
+        return response()->api($this->category->tree());
     }
 }

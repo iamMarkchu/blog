@@ -3,9 +3,18 @@
         <el-form ref="form" :model="form" :rules="rules" label-width="120px">
             <el-form-item label="类别名称" prop="name">
                 <el-col :span="8">
-                    <el-input v-model="form.name"></el-input>
+                    <el-input v-model="form.name" @blur="handleGenerateUrl()"></el-input>
                 </el-col>
             </el-form-item>
+            <el-row>
+                <el-col :span="16">
+                    <el-form-item label="链接" prop="url_name">
+                        <el-input v-model="form.url_name" :disabled="true">
+                            <template slot="prepend">/categories/</template>
+                        </el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
             <el-form-item label="排序">
                 <el-col :span="2">
                     <el-input-number v-model="form.display_order" :step="5"></el-input-number>
@@ -34,8 +43,10 @@
 
 <script>
     import { fetch, tree, add, update, fetchAll } from "../../../api/categories"
+    import {generateUrl} from "../../../api/common";
 
     const form = {
+        url_name: '',
         name: '',
         recursive: [],
         parent_id: 0,
@@ -105,6 +116,8 @@
                 fetch(id)
                     .then((response) => {
                         this.form = response.data.data
+                        if (response.data.data.recursive == "")
+                            response.data.data.recursive = []
                         this.parentSelected = response.data.data.recursive.split(",").map(x => parseInt(x))
                     })
             },
@@ -172,7 +185,19 @@
                     this.$router.go(-1)
                 else
                     this.$emit("cancel")
-            }
+            },
+            handleGenerateUrl() {
+                if (this.form.name == '')
+                    return false
+                this.form.url_name = '正在生成链接....请耐心等待'
+                let oldUrlName = this.form.url_name
+                generateUrl(this.form.name)
+                    .then((response) => {
+                        this.form.url_name = response.data.data
+                    }).catch((err) => {
+                    this.form.url_name = oldUrlName
+                })
+            },
 
         }
     }

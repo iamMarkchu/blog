@@ -6,7 +6,7 @@
                 :fetch-list="fetchList">
             <el-table-column slot="name" label="标签名字" align="center">
                 <template slot-scope="scope">
-                    <a :href="'http://blog.test/' + scope.row.url_name">{{ scope.row.name }}</a>
+                    <a :href="'/tags/' + scope.row.url_name">{{ scope.row.name }}</a>
                 </template>
             </el-table-column>
             <el-table-column slot="status" label="状态" align="center">

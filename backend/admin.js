@@ -7,7 +7,6 @@ import Admin from './components/Admin'
 import './permission'
 
 Vue.use(ElementUI)
-
 const app = new Vue({
     el: '#app',
     router,

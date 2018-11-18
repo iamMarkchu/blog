@@ -1,7 +1,5 @@
 <?php
 
-use App\Providers\ResponseMacroServiceProvider;
-
 return [
 
     /*
@@ -152,6 +150,8 @@ return [
         /*
          * Package Service Providers...
          */
+        EloquentFilter\ServiceProvider::class,
+        Overtrue\LaravelUploader\UploadServiceProvider::class,
 
         /*
          * Application Service Providers...

@@ -4,7 +4,16 @@
             <el-row>
                 <el-col :span="16">
                     <el-form-item label="标题" prop="title">
-                        <el-input v-model="form.title"></el-input>
+                        <el-input v-model="form.title" @blur="handleGenerateUrl()"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="16">
+                    <el-form-item label="链接" prop="url_name">
+                        <el-input v-model="form.url_name" :disabled="true">
+                            <template slot="prepend">/articles/</template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -51,8 +60,7 @@
             <el-row>
                 <el-col :span="12">
                     <el-form-item label="封面图">
-                        <img :src="form.cover" alt="" v-if="form.cover != ''">
-                        <el-tag type="info" v-else>暂无</el-tag>
+                        <img :src="form.cover" alt="" v-if="form.cover != ''" class="image">
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -66,6 +74,7 @@
                 <el-col :span="20">
                     <el-form-item label="正文">
                         <el-input
+                            id="myContent"
                             type="textarea"
                             rows="70"
                             placeholder="请输入内容"
@@ -89,9 +98,9 @@
             <category-add :is-article="true" @finish="handleCategoryAdd($event)" @cancel="categoryAdderShow=false"></category-add>
         </el-dialog>
         <el-dialog title="github管理" :visible.sync="githubManagerShow" @open="openGithubManager" append-to-body>
-            <ol>
-                <li v-for="item in githubArticleList" :key="item.path" @click="handleImport(item)"> {{ item.path }}</li>
-            </ol>
+            <p v-for="(item, index) in githubArticleList" :key="item.path" @click="handleImport(item)">
+                {{ index }}. {{ item.path }}
+            </p>
         </el-dialog>
 
     </div>
@@ -106,9 +115,11 @@
     import tagAdd from "../../../views/tag/components/tagDetail"
     import categoryAdd from "../../../views/category/components/categoryDetail"
     import axios from 'axios'
+    import { generateUrl } from "../../../api/common"
 
     const form = {
         title: "",
+        url_name: "",
         content: "",
         cover: "",
         display_order: 99,
@@ -118,8 +129,8 @@
     }
 
     const sourceOptions = [
-        {key: '1', value: '1', label: '原创'},
-        {key: '2', value: '2', label: '转载'}
+        {key: '原创', value: '1', label: '原创'},
+        {key: '转载', value: '2', label: '转载'}
     ]
     const validRules = {
         title: [
@@ -149,12 +160,15 @@
                 categoryAdderShow: false,
                 githubManagerShow: false,
                 githubArticleList: [],
+                githubDataReady: false,
                 selectCover: false,
             }
         },
         created() {
             // recursive.split(",").map(x => parseInt(x))
             this.categoryTree()
+        },
+        mounted() {
             if (this.isEdit)
             {
                 let id = this.$route.params.id
@@ -199,9 +213,10 @@
                 })
             },
             openGithubManager() {
+                this.githubDataReady = true
                 fetchList().then((response) => {
-                    console.log(response.data)
                     this.githubArticleList = response.data.data
+                    this.githubDataReady = false
                 })
             },
             handleImport(item) {
@@ -236,7 +251,19 @@
                 categories.push(category.id)
                 this.form.categories = categories
                 this.categoryAdderShow = false
-            }
+            },
+            handleGenerateUrl() {
+                if (this.form.title == '')
+                    return false
+                this.form.url_name = '正在生成链接....请耐心等待'
+                let oldUrlName = this.form.url_name
+                generateUrl(this.form.title)
+                    .then((response) => {
+                        this.form.url_name = response.data.data
+                    }).catch((err) => {
+                        this.form.url_name = oldUrlName
+                })
+            },
         },
         components: {
             CkTag, materialIndex,tagAdd,categoryAdd

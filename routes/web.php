@@ -36,7 +36,6 @@ Route::put("/admin/articles/{article}/revoke", "ArticleController@revoke");
 Route::resource("/admin/github", "GithubController");
 
 // 博客页面
-
 Route::get("/", "Page\HomeController@index")->name("home");  // 首页
 Route::get("/articles/{url_name}", "Page\ArticleController@index")->name("article");  // 文章页面
 Route::get("/tags/{url_name}", "Page\TagController@index")->name("tag");  // 标签页面
