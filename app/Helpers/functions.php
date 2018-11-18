@@ -111,7 +111,7 @@ if (!function_exists('get_page_cache_key')) {
      * @param string $url
      * @return bool|\Illuminate\Config\Repository|mixed|string
      */
-    function get_page_cache_key(string $type, string $url) {
+    function get_page_cache_key(string $type, string $url='') {
         switch ($type) {
             case 'home':
                 $cacheKey = config('cachekey.cache_home_page');
