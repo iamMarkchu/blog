@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Page;
 
 use App\Category;
 use App\Http\Controllers\Controller;
+use App\Jobs\SetPageView;
+use App\Logics\PageViewLogic;
 use Illuminate\Support\Facades\Redis;
 
 class CategoryController extends Controller
@@ -11,6 +13,7 @@ class CategoryController extends Controller
     //
     public function index($url_name)
     {
+        SetPageView::dispatch(new PageViewLogic(), $url_name, 'category');
         if ($html = get_page_cache('category', $url_name)) {
             return $html;
         }

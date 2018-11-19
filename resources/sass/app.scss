@@ -64,6 +64,12 @@ footer {
 }
 
 // article区域
+.info-block {
+  font-size: .7em;
+}
+.info-block>span {
+  margin-right: 5px;
+}
 .markdown-body {
   //box-sizing: border-box;
   //min-width: 200px;

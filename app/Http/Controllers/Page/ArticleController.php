@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Page;
 
 use App\Article;
+use App\Jobs\SetPageView;
+use App\Logics\PageViewLogic;
 use App\Utils\Markdown\Markdown;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,10 +15,12 @@ class ArticleController extends Controller
     //
     public function index($url_name)
     {
+        SetPageView::dispatch(new PageViewLogic(), $url_name, 'article');
         if ($html = get_page_cache('article', $url_name)) {
             return $html;
         }
         $article = Article::with(["categories", "tags", "user"])->where(["status" => Article::STATUS_NORMAL, "url_name" => $url_name])->first();
+
         if (!$article)
             abort(404);
 
@@ -48,9 +52,11 @@ class ArticleController extends Controller
             }
         }
 
-        $html = view("page.article", compact("article","list"));
-        set_page_cache('article', $url_name, $html);
+        $pageType = 'article';
+        $pageId = $article->id;
 
+        $html = view("page.article", compact("article","list", "pageType", "pageId"));
+        set_page_cache('article', $url_name, $html);
         return $html;
     }
 }

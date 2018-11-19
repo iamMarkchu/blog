@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Page;
 
+use App\Jobs\SetPageView;
+use App\Logics\PageViewLogic;
 use App\Tag;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
@@ -11,6 +13,7 @@ class TagController extends Controller
     //
     public function index($url_name)
     {
+        SetPageView::dispatch(new PageViewLogic(), $url_name, 'category');
         if ($html = get_page_cache('tag', $url_name)) {
             return $html;
         }

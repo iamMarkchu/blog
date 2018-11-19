@@ -40,3 +40,5 @@ Route::get("/", "Page\HomeController@index")->name("home");  // 首页
 Route::get("/articles/{url_name}", "Page\ArticleController@index")->name("article");  // 文章页面
 Route::get("/tags/{url_name}", "Page\TagController@index")->name("tag");  // 标签页面
 Route::get("/categories/{url_name}", "Page\CategoryController@index")->name("category");  // 类别页面
+
+Route::get('/page-view-count/{type}/{id}', 'PageCountController@viewCount');//返回页面 view count

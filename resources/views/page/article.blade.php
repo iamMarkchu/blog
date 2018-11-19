@@ -6,6 +6,11 @@
                 <div class="card">
                     <div class="card-body markdown-body">
                         <h1 class="card-title text-center">{{ $article->title }}</h1>
+                        <div class="info-block text-center text-muted">
+                            <span class="oi oi-timer"></span><span>{{ $article->updated_at }}</span>&nbsp;&nbsp;
+                            <span class="oi oi-person"></span><span>{{ $article->user->name }}</span>&nbsp;&nbsp;
+                            <span class="oi oi-eye"></span><span class="view_count">0</span>&nbsp;&nbsp;
+                        </div>
                         {!! $article->markdown !!}
                     </div>
                 </div>
