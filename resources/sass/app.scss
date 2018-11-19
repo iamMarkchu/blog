@@ -8,6 +8,9 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+// github-markdown-css
+@import "~github-markdown-css/github-markdown.css";
+
 html, body,#app {
   margin: 0;
   padding: 0;
@@ -61,14 +64,16 @@ footer {
 }
 
 // article区域
-.article-body {
-  padding: 25px;
+.markdown-body {
+  //box-sizing: border-box;
+  //min-width: 200px;
+  //max-width: 980px;
+  //margin: 0 auto;
+  //padding: 45px;
 }
-.article-body h2,h3,h4,h5,h6 {
-  margin-bottom: 15px;
-}
-.article-body pre {
-  margin-bottom: 1rem;
-  background-color: #f7f7f9;
-  padding: 1rem;
+
+@media (max-width: 767px) {
+  .markdown-body {
+    padding: 15px;
+  }
 }

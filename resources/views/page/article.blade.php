@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-body article-body">
+                    <div class="card-body markdown-body">
                         <h1 class="card-title text-center">{{ $article->title }}</h1>
                         {!! $article->markdown !!}
                     </div>
